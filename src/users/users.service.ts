@@ -1,12 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { hash } from 'bcrypt';
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
-    // return this.prisma.user.create();
+  async create(createUserDto: CreateUserDto) {
+    try {
+      return await this.prisma.user.create({
+        data: {
+          username: createUserDto.username,
+          password: await hash(createUserDto.password, 10),
+          email: createUserDto.email,
+          nombre: createUserDto.nombre,
+          roles: createUserDto.roleIds
+            ? { connect: createUserDto.roleIds.map((id) => ({ id })) }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('El nombre de usuario o email ya está en uso');
+      }
+      throw new BadRequestException('Error al crear el usuario: ' + error.message);
+    }
   }
 
   findAll() {
@@ -17,11 +35,7 @@ export class UsersService {
         email: true,
         roles: {
           select: {
-            role:{
-              select: {
-                nombre: true,
-              },
-            },
+            nombre: true,
           },
         },
       },

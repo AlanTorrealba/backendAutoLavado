@@ -21,13 +21,7 @@ async function main() {
   const rolAdmin = await prisma.role.create({
     data: {
       nombre: 'admin',
-      descripcion: 'Administrador del sistema',
-      permisos: {
-        create: [
-          { permission: { connect: { id: permisoGestionUsuarios.id } } },
-          { permission: { connect: { id: permisoGestionCitas.id } } },
-        ],
-      },
+      descripcion: 'Administrador',
     },
   });
 
@@ -35,9 +29,6 @@ async function main() {
     data: {
       nombre: 'operador',
       descripcion: 'Personal operativo',
-      permisos: {
-        create: [{ permission: { connect: { id: permisoGestionCitas.id } } }],
-      },
     },
   });
 
@@ -49,7 +40,19 @@ async function main() {
       nombre: 'Administrador',
       email: 'admin@autolavado.com',
       roles: {
-        create: [{ roleId: rolAdmin.id }],
+        connect: [{ id: rolAdmin.id }, { id: rolOperador.id }],
+      },
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      username: 'usuario',
+      password: 'usuario123',
+      nombre: 'Usuario',
+      email: 'usuario@demo.com',
+      roles: {
+        connect: [{ id: rolOperador.id }],
       },
     },
   });
