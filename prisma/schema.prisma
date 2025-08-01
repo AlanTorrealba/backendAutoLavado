@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================
+// MODELOS DE USUARIOS Y ROLES
+// ========================
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  nombre    String
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy Int?
+  updatedBy Int?
+
+  roles UserRole[]
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  descripcion String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   Int?
+  updatedBy   Int?
+
+  permisos RolePermission[]
+  usuarios UserRole[]
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  nombre      String   @unique
+  descripcion String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdBy   Int?
+  updatedBy   Int?
+
+  roles RolePermission[]
+}
+
+model UserRole {
+  id     Int @id @default(autoincrement())
+  userId Int
+  roleId Int
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+model RolePermission {
+  id           Int @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
+}
+
+// ========================
+// MODELOS DE CLIENTES Y VEHÍCULOS
+// ========================
+model Cliente {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  cedula    String     @unique
+  telefono  String?
+  vehiculos Vehiculo[]
+  citas     Cita[]
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  createdBy Int?
+  updatedBy Int?
+}
+
+model TipoVehiculo {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  vehiculos Vehiculo[]
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  createdBy Int?
+  updatedBy Int?
+}
+
+model Vehiculo {
+  id         Int         @id @default(autoincrement())
+  placa      String      @unique
+  marca      String
+  modelo     String
+  tipoId     Int
+  tipo       TipoVehiculo @relation(fields: [tipoId], references: [id])
+  clienteId  Int
+  cliente    Cliente     @relation(fields: [clienteId], references: [id])
+  citas      Cita[]
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  createdBy  Int?
+  updatedBy  Int?
+}
+
+// ========================
+// MODELOS DE CITAS Y SERVICIOS
+// ========================
+model Servicio {
+  id            Int             @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  citaServicios CitaServicio[]
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  createdBy     Int?
+  updatedBy     Int?
+}
+
+model Tarifa {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  precio    Float
+  citas     Cita[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy Int?
+  updatedBy Int?
+}
+
+model Cita {
+  id            Int             @id @default(autoincrement())
+  clienteId     Int
+  cliente       Cliente         @relation(fields: [clienteId], references: [id])
+  vehiculoId    Int
+  vehiculo      Vehiculo        @relation(fields: [vehiculoId], references: [id])
+  tarifaId      Int
+  tarifa        Tarifa          @relation(fields: [tarifaId], references: [id])
+  fecha         DateTime
+  estatus       String
+  citaServicios CitaServicio[]
+  isActive      Boolean         @default(true)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  createdBy     Int?
+  updatedBy     Int?
+}
+
+model CitaServicio {
+  id         Int      @id @default(autoincrement())
+  citaId     Int
+  servicioId Int
+
+  cita       Cita     @relation(fields: [citaId], references: [id])
+  servicio   Servicio @relation(fields: [servicioId], references: [id])
+
+  @@unique([citaId, servicioId])
+}
