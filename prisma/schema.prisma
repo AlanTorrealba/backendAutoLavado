@@ -8,7 +8,7 @@ datasource db {
 }
 
 // ========================
-// MODELOS DE USUARIOS Y ROLES
+// MODELOS DE USUARIOS Y ROLES (CON RELACIÓN IMPLÍCITA)
 // ========================
 model User {
   id        Int      @id @default(autoincrement())
@@ -22,7 +22,8 @@ model User {
   createdBy Int?
   updatedBy Int?
 
-  roles Role[]
+  // Cambiado a relación implícita
+  roles Role[] @relation
 }
 
 model Role {
@@ -36,7 +37,8 @@ model Role {
   updatedBy   Int?
 
   permisos RolePermission[]
-  usuarios UserRole[]
+  // Cambiado a relación implícita
+  users User[] @relation
 }
 
 model Permission {
@@ -52,16 +54,7 @@ model Permission {
   roles RolePermission[]
 }
 
-model UserRole {
-  id     Int @id @default(autoincrement())
-  userId Int
-  roleId Int
-
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
-
-  @@unique([userId, roleId])
-}
+// Eliminado el modelo UserRole ya que será implícito
 
 model RolePermission {
   id           Int @id @default(autoincrement())
