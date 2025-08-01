@@ -1,15 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class UsersService {
+  constructor(private prisma: PrismaService) {}
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    // return this.prisma.user.create();
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        roles: {
+          select: {
+            role:{
+              select: {
+                nombre: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        username: 'asc',
+      },
+    });
+    // return `This action returns all users`;
   }
 
   findOne(id: number) {
@@ -24,10 +44,9 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
   async findByUsername(username: string): Promise<any> {
-    if (username === "Alan") {
-      // Hash de '1234' generado con bcrypt
-      return { id: 1, username: "Alan", password: "$2a$12$sjSaItDtFS/rbsHxwpwv.erfRkyea6REcjLcSasQFpXHMyeyJ0xPW" };
-    }
-    return null;
+    return await this.prisma.user.findUnique({
+      where: { username: username },
+      include: { roles: true }, // Cambia 'rol' si tu modelo lo tiene como 'roles'
+    });
   }
 }

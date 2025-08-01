@@ -36,9 +36,7 @@ async function main() {
       nombre: 'operador',
       descripcion: 'Personal operativo',
       permisos: {
-        create: [
-          { permission: { connect: { id: permisoGestionCitas.id } } },
-        ],
+        create: [{ permission: { connect: { id: permisoGestionCitas.id } } }],
       },
     },
   });
@@ -51,9 +49,7 @@ async function main() {
       nombre: 'Administrador',
       email: 'admin@autolavado.com',
       roles: {
-        create: [
-          { roleId: rolAdmin.id }
-        ],
+        create: [{ roleId: rolAdmin.id }],
       },
     },
   });
@@ -110,9 +106,7 @@ async function main() {
       fecha: new Date(),
       estatus: 'Pendiente',
       citaServicios: {
-        create: [
-          { servicioId: servicio.id },
-        ],
+        create: [{ servicioId: servicio.id }],
       },
     },
   });

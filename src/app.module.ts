@@ -8,9 +8,16 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { PermisosModule } from './permisos/permisos.module';
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }), PrismaModule, AuthModule, UsersModule, RolesModule, PermisosModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PrismaModule,
+    AuthModule,
+    UsersModule,
+    RolesModule,
+    PermisosModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

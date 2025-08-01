@@ -22,7 +22,7 @@ model User {
   createdBy Int?
   updatedBy Int?
 
-  roles UserRole[]
+  roles Role[]
 }
 
 model Role {
