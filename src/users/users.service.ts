@@ -23,7 +23,7 @@ export class UsersService {
       if (error.code === 'P2002') {
         throw new ConflictException('El nombre de usuario o email ya está en uso');
       }
-      throw new BadRequestException('Error al crear el usuario: ' + error.message);
+      throw new BadRequestException('Error al crear el usuario: ' + error.meta?.cause);
     }
   }
 
@@ -50,12 +50,45 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      return await this.prisma.user.update({
+        where: {
+          id:id,
+        },
+        data:{
+          username: updateUserDto.username,
+          email: updateUserDto.email,
+          nombre: updateUserDto.nombre,
+          roles: updateUserDto.roleIds
+            ? { set: updateUserDto.roleIds.map((id) => ({ id })) }
+            : undefined,
+        }
+
+      })
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('El nombre de usuario o email ya está en uso');
+      }
+      throw new BadRequestException('Error al actualizar el usuario: ' + error.meta?.cause);
+    } 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    try {
+      return await this.prisma.user.update({
+        where:{ id:id},
+          data:{
+            isActive: false
+          }
+        
+      })
+    } catch (error) {
+      if (error.code === 'P2003') {
+        throw new ConflictException('El usuario no se puede eliminar porque está asociado a otros registros');
+      }
+      throw new BadRequestException('Error al eliminar el usuario: ' + error.meta?.cause);
+    }
   }
   async findByUsername(username: string): Promise<any> {
     return await this.prisma.user.findUnique({
