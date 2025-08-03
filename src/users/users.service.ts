@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -21,9 +25,13 @@ export class UsersService {
       });
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException('El nombre de usuario o email ya está en uso');
+        throw new ConflictException(
+          'El nombre de usuario o email ya está en uso',
+        );
       }
-      throw new BadRequestException('Error al crear el usuario: ' + error.meta?.cause);
+      throw new BadRequestException(
+        'Error al crear el usuario: ' + error.meta?.cause,
+      );
     }
   }
 
@@ -54,46 +62,64 @@ export class UsersService {
     try {
       return await this.prisma.user.update({
         where: {
-          id:id,
+          id: id,
         },
-        data:{
+        data: {
           username: updateUserDto.username,
           email: updateUserDto.email,
           nombre: updateUserDto.nombre,
           roles: updateUserDto.roleIds
             ? { set: updateUserDto.roleIds.map((id) => ({ id })) }
             : undefined,
-        }
-
-      })
+        },
+      });
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new ConflictException('El nombre de usuario o email ya está en uso');
+        throw new ConflictException(
+          'El nombre de usuario o email ya está en uso',
+        );
       }
-      throw new BadRequestException('Error al actualizar el usuario: ' + error.meta?.cause);
-    } 
+      throw new BadRequestException(
+        'Error al actualizar el usuario: ' + error.meta?.cause,
+      );
+    }
   }
 
   async remove(id: number) {
     try {
       return await this.prisma.user.update({
-        where:{ id:id},
-          data:{
-            isActive: false
-          }
-        
-      })
+        where: { id: id },
+        data: {
+          isActive: false,
+        },
+      });
     } catch (error) {
       if (error.code === 'P2003') {
-        throw new ConflictException('El usuario no se puede eliminar porque está asociado a otros registros');
+        throw new ConflictException(
+          'El usuario no se puede eliminar porque está asociado a otros registros',
+        );
       }
-      throw new BadRequestException('Error al eliminar el usuario: ' + error.meta?.cause);
+      throw new BadRequestException(
+        'Error al eliminar el usuario: ' + error.meta?.cause,
+      );
     }
   }
-  async findByUsername(username: string): Promise<any> {
+  async findByUsername(
+    username: string,
+  ): Promise<any> {
     return await this.prisma.user.findUnique({
       where: { username: username },
-      include: { roles: true }, // Cambia 'rol' si tu modelo lo tiene como 'roles'
+      include:{
+        roles: {
+          include:{
+            permisos: {
+              include:{
+                permission: true
+              }
+            }
+          }
+        }
+      }
     });
   }
 }

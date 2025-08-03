@@ -7,6 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { PermisosModule } from './permisos/permisos.module';
+import { RolesGuard } from './auth/guards/roles.guards';
+import {PermissionsGuard} from './auth/guards/permission.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +24,20 @@ import { PermisosModule } from './permisos/permisos.module';
     PermisosModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard, // Primero el JwtAuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard, // Luego el RolesGuard
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: PermissionsGuard,
+    },
+  ],
 })
 export class AppModule {}

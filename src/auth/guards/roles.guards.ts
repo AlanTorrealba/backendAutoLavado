@@ -17,17 +17,17 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-
+    
     if (!requiredRoles || requiredRoles.length === 0) {
       return true; // No roles requeridos
     }
-
-    const { user } = context.switchToHttp().getRequest();
-
-    const userRoles = user.roles?.map((r: any) => r.nombre) ?? [];
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    console.log(user)
+    const userRoles = user.roles ?? [];
 
     const hasRole = requiredRoles.some((role) => userRoles.includes(role));
-
+    console.log(hasRole)
     if (!hasRole) {
       throw new ForbiddenException('No tienes permiso para acceder a esta ruta');
     }
