@@ -11,6 +11,7 @@ import { RolesGuard } from './auth/guards/roles.guards';
 import {PermissionsGuard} from './auth/guards/permission.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     RolesModule,
     PermisosModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [
