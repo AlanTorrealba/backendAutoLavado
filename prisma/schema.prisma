@@ -98,8 +98,8 @@ model TipoVehiculo {
 model Vehiculo {
   id         Int         @id @default(autoincrement())
   placa      String      @unique
-  marca      String
-  modelo     String
+  marca      String?
+  modelo     String?
   tipoId     Int
   tipo       TipoVehiculo @relation(fields: [tipoId], references: [id])
   clienteId  Int

@@ -6,15 +6,82 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ClientService {
   constructor(private prisma: PrismaService) {}
 
+  // async create(data: CreateClientDto, userId: number) {
+  //   const { vehiculos, ...clienteData } = data;
+  //   return await this.prisma.cliente.create({
+  //     data: {
+  //       ...clienteData,
+  //       createdBy: userId,
+  //       vehiculos:
+  //         vehiculos && vehiculos.length > 0
+  //           ? {
+  //               create: vehiculos.map((vehiculo) => ({
+  //                 placa: vehiculo.placa,
+  //                 createdBy: userId,
+  //                 ...(vehiculo.marca && { marca: vehiculo.marca }),
+  //                 ...(vehiculo.modelo && { modelo: vehiculo.modelo }),
+  //                 tipo: {
+  //                   connect: { id: vehiculo.tipoId },
+  //                 },
+  //               })),
+  //             }
+  //           : undefined,
+  //     },
+  //     include: {
+  //       vehiculos: true,
+  //     },
+  //   });
+  // }
+  // async create(data: CreateClientDto, userId: number) {
+  //   const { vehiculos, ...clienteData } = data;
+
+  //   return await this.prisma.cliente.create({
+  //     data: {
+  //       ...clienteData,
+  //       createdBy: userId,
+  //       vehiculos: vehiculos?.length
+  //         ? {
+  //             create: vehiculos.map((vehiculo) => ({
+  //               placa: vehiculo.placa,
+  //               createdBy: userId,
+  //               marca: vehiculo.marca ?? '',
+  //               modelo: vehiculo.modelo ?? '',
+  //               tipo: vehiculo.tipoId
+  //                 ? {
+  //                     connect: { id: vehiculo.tipoId },
+  //                   }
+  //                 : undefined,
+  //             })),
+  //           }
+  //         : undefined,
+  //     },
+  //     include: {
+  //       vehiculos: true,
+  //     },
+  //   });
+  // }
   async create(data: CreateClientDto, userId: number) {
+    const { vehiculos, ...clienteData } = data;
+
     return await this.prisma.cliente.create({
       data: {
-        ...data,
+        ...clienteData,
         createdBy: userId,
+        vehiculos: vehiculos?.length
+          ? {
+              create: vehiculos.map((vehiculo) => ({
+                placa: vehiculo.placa,
+                createdBy: userId,
+                ...(vehiculo.marca ? { marca: vehiculo.marca } : {}),
+                ...(vehiculo.modelo ? { modelo: vehiculo.modelo } : {}),
+                tipo: { connect: { id: vehiculo.tipoId } },
+              })),
+            }
+          : undefined,
       },
+      include: { vehiculos: true },
     });
   }
-
   async findAll() {
     return await this.prisma.cliente.findMany({
       orderBy: { createdAt: 'desc' },
@@ -28,10 +95,11 @@ export class ClientService {
   }
 
   async update(id: number, data: UpdateClientDto, userId: number) {
+    const { vehiculos, ...restoData } = data;
     return await this.prisma.cliente.update({
       where: { id },
       data: {
-        ...data,
+        ...restoData,
         updatedBy: userId,
       },
     });

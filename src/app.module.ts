@@ -12,6 +12,7 @@ import {PermissionsGuard} from './auth/guards/permission.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ClientModule } from './client/client.module';
+import { VehiculosModule } from './vehiculos/vehiculos.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ClientModule } from './client/client.module';
     RolesModule,
     PermisosModule,
     ClientModule,
+    VehiculosModule,
   ],
   controllers: [AppController],
   providers: [
