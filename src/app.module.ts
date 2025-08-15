@@ -13,6 +13,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ClientModule } from './client/client.module';
 import { VehiculosModule } from './vehiculos/vehiculos.module';
+import { ServiciosModule } from './servicios/servicios.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { VehiculosModule } from './vehiculos/vehiculos.module';
     PermisosModule,
     ClientModule,
     VehiculosModule,
+    ServiciosModule,
   ],
   controllers: [AppController],
   providers: [

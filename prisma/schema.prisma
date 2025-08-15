@@ -38,7 +38,7 @@ model Role {
 
   permisos RolePermission[]
   // Cambiado a relación implícita
-  users User[] @relation
+  users    User[]           @relation
 }
 
 model Permission {
@@ -96,33 +96,35 @@ model TipoVehiculo {
 }
 
 model Vehiculo {
-  id         Int         @id @default(autoincrement())
-  placa      String      @unique
-  marca      String?
-  modelo     String?
-  tipoId     Int
-  tipo       TipoVehiculo @relation(fields: [tipoId], references: [id])
-  clienteId  Int
-  cliente    Cliente     @relation(fields: [clienteId], references: [id])
-  citas      Cita[]
-  isActive   Boolean     @default(true)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  createdBy  Int?
-  updatedBy  Int?
+  id        Int          @id @default(autoincrement())
+  placa     String       @unique
+  marca     String?
+  modelo    String?
+  tipoId    Int
+  tipo      TipoVehiculo @relation(fields: [tipoId], references: [id])
+  clienteId Int
+  cliente   Cliente      @relation(fields: [clienteId], references: [id])
+  citas     Cita[]
+  isActive  Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  createdBy Int?
+  updatedBy Int?
 }
 
 // ========================
 // MODELOS DE CITAS Y SERVICIOS
 // ========================
 model Servicio {
-  id            Int             @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   nombre        String
   descripcion   String?
+  precio        Float          @default(0.0)
+  duracion      Int            @default(0)
   citaServicios CitaServicio[]
-  isActive      Boolean         @default(true)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   createdBy     Int?
   updatedBy     Int?
 }
@@ -140,30 +142,30 @@ model Tarifa {
 }
 
 model Cita {
-  id            Int             @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   clienteId     Int
-  cliente       Cliente         @relation(fields: [clienteId], references: [id])
+  cliente       Cliente        @relation(fields: [clienteId], references: [id])
   vehiculoId    Int
-  vehiculo      Vehiculo        @relation(fields: [vehiculoId], references: [id])
+  vehiculo      Vehiculo       @relation(fields: [vehiculoId], references: [id])
   tarifaId      Int
-  tarifa        Tarifa          @relation(fields: [tarifaId], references: [id])
+  tarifa        Tarifa         @relation(fields: [tarifaId], references: [id])
   fecha         DateTime
   estatus       String
   citaServicios CitaServicio[]
-  isActive      Boolean         @default(true)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   createdBy     Int?
   updatedBy     Int?
 }
 
 model CitaServicio {
-  id         Int      @id @default(autoincrement())
+  id         Int @id @default(autoincrement())
   citaId     Int
   servicioId Int
 
-  cita       Cita     @relation(fields: [citaId], references: [id])
-  servicio   Servicio @relation(fields: [servicioId], references: [id])
+  cita     Cita     @relation(fields: [citaId], references: [id])
+  servicio Servicio @relation(fields: [servicioId], references: [id])
 
   @@unique([citaId, servicioId])
 }
