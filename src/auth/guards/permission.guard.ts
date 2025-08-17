@@ -24,11 +24,11 @@ export class PermissionsGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = request.user
-    console.log('Usuario autenticado:', user);
+    console.log('Usuario autenticado: desde Permissions Guard', user);
     const userPermissions: string [] = user.permissions ?? [];
 
       const hasPermission = requiredPermissions.some((permission) => userPermissions.includes(permission));
-    console.log(hasPermission)
+    console.log(hasPermission, 'Desde Permissions Guard')
       if (!hasPermission) {
         throw new ForbiddenException('No tienes permiso para acceder a esta ruta');
       }

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `servicio` ADD COLUMN `duracion` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `precio` DOUBLE NOT NULL DEFAULT 0.0;

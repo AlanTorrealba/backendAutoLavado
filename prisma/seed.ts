@@ -103,13 +103,18 @@ async function main() {
   // Cita
   const cita = await prisma.cita.create({
     data: {
+      fecha: new Date(),
       clienteId: cliente.id,
       vehiculoId: vehiculo.id,
-      tarifaId: tarifa.id,
-      fecha: new Date(),
-      estatus: 'Pendiente',
+      tarifaId: 1, // <-- el ID de una tarifa existente
+      estatus: 'pendiente', // <-- o el valor que definas
+      createdBy: 1,
+      updatedBy: 1,
       citaServicios: {
-        create: [{ servicioId: servicio.id }],
+        create: {
+          servicioId: servicio.id,
+          precio: servicio.precio,
+        },
       },
     },
   });

@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ClientModule } from './client/client.module';
 import { VehiculosModule } from './vehiculos/vehiculos.module';
 import { ServiciosModule } from './servicios/servicios.module';
+import { CitasModule } from './citas/citas.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ServiciosModule } from './servicios/servicios.module';
     ClientModule,
     VehiculosModule,
     ServiciosModule,
+    CitasModule,
   ],
   controllers: [AppController],
   providers: [

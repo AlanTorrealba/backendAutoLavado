@@ -160,10 +160,13 @@ model Cita {
 }
 
 model CitaServicio {
-  id         Int @id @default(autoincrement())
+  id         Int   @id @default(autoincrement())
   citaId     Int
   servicioId Int
-
+  precio     Float
+  cantidad   Int   @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   cita     Cita     @relation(fields: [citaId], references: [id])
   servicio Servicio @relation(fields: [servicioId], references: [id])
 
