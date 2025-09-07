@@ -141,6 +141,17 @@ model Tarifa {
   updatedBy Int?
 }
 
+model Estatus {
+  id        Int      @id @default(autoincrement())
+  nombre    String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relación con citas
+  citas Cita[]
+}
+
 model Cita {
   id            Int            @id @default(autoincrement())
   clienteId     Int
@@ -150,25 +161,26 @@ model Cita {
   tarifaId      Int
   tarifa        Tarifa         @relation(fields: [tarifaId], references: [id])
   fecha         DateTime
-  estatus       String
   citaServicios CitaServicio[]
   isActive      Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   createdBy     Int?
   updatedBy     Int?
+  estatusId     Int
+  estatus       Estatus        @relation(fields: [estatusId], references: [id])
 }
 
 model CitaServicio {
-  id         Int   @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   citaId     Int
   servicioId Int
   precio     Float
-  cantidad   Int   @default(1)
+  cantidad   Int      @default(1)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  cita     Cita     @relation(fields: [citaId], references: [id])
-  servicio Servicio @relation(fields: [servicioId], references: [id])
+  cita       Cita     @relation(fields: [citaId], references: [id])
+  servicio   Servicio @relation(fields: [servicioId], references: [id])
 
   @@unique([citaId, servicioId])
 }

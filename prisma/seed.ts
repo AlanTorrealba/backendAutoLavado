@@ -72,6 +72,16 @@ async function main() {
       telefono: '04141234567',
     },
   });
+  const estatus = await prisma.estatus.createMany({
+  data: [
+    { nombre: "Pendiente" },
+    { nombre: "Confirmada" },
+    { nombre: "En Proceso" },
+    { nombre: "Completada" },
+    { nombre: "Cancelada" },
+  ],
+});
+
 
   // Vehículo
   const vehiculo = await prisma.vehiculo.create({
@@ -107,7 +117,7 @@ async function main() {
       clienteId: cliente.id,
       vehiculoId: vehiculo.id,
       tarifaId: 1, // <-- el ID de una tarifa existente
-      estatus: 'pendiente', // <-- o el valor que definas
+      estatusId: 1, // <-- o el valor que definas
       createdBy: 1,
       updatedBy: 1,
       citaServicios: {

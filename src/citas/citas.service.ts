@@ -33,6 +33,7 @@ export class CitasService {
         cliente: true,
         vehiculo: true,
         tarifa: true,
+        estatus: true,
       },
     });
   }
@@ -48,15 +49,26 @@ export class CitasService {
       },
     });
 
-    return citas.map((cita) => ({
-      ...cita,
-      total: cita.citaServicios.reduce(
-        (sum, cs) => sum + cs.precio * (cs.cantidad ?? 1),
-        0,
-      ),
+   return citas.map(cita => {
+    // calcular total por cada servicio
+    const citaServiciosConTotal = cita.citaServicios.map(cs => ({
+      ...cs,
+      totalServicio: cs.precio * (cs.cantidad ?? 1),
     }));
-  }
 
+    // calcular gran total de la cita
+    const totalCita = citaServiciosConTotal.reduce(
+      (sum, cs) => sum + cs.totalServicio,
+      0
+    );
+
+    return {
+      ...cita,
+      citaServicios: citaServiciosConTotal,
+      total: totalCita,
+    };
+  });
+}
   findOne(id: number) {
     return this.prisma.cita.findUnique({
       where: { id },
@@ -77,7 +89,7 @@ export class CitasService {
       data: {
         ...citaData,
         updatedBy: userId,
-        fecha: moment(citaData.fecha, 'YYYYMMDD').toDate(),
+        fecha: new Date(),
         citaServicios:
           detalles && detalles.length
             ? {

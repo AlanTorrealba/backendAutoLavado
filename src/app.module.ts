@@ -36,11 +36,11 @@ import { CitasModule } from './citas/citas.module';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Primero el JwtAuthGuard
+      useClass: JwtAuthGuard, 
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard, // Luego el RolesGuard
+      useClass: RolesGuard,
     },
     {
       provide: 'APP_GUARD',

@@ -13,8 +13,8 @@ export class CreateCitaDto {
   @IsDateString()
   fecha: string;
 
-  @IsString()
-  estatus: string;
+  @IsInt()
+  estatusId: number;
 
   @IsArray()
   detalles: { 

@@ -13,7 +13,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET // Token expiration time
+      secret: process.env.JWT_SECRET
     }),
     UsersModule,
   ],
