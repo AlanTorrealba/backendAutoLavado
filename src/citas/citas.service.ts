@@ -40,7 +40,6 @@ export class CitasService {
 
   async findAll() {
     const citas = await this.prisma.cita.findMany({
-      where: { isActive: true },
       include: {
         citaServicios: { include: { servicio: true } },
         cliente: true,
@@ -61,7 +60,6 @@ export class CitasService {
       (sum, cs) => sum + cs.totalServicio,
       0
     );
-
     return {
       ...cita,
       citaServicios: citaServiciosConTotal,
@@ -107,6 +105,12 @@ export class CitasService {
         vehiculo: true,
         tarifa: true,
       },
+    });
+  }
+   reciclar(id: number) {
+    return this.prisma.cita.update({
+      where: { id },
+      data: { isActive: true },
     });
   }
 

@@ -3,7 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  ForbiddenException
+  ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from '../decorators/permissions.decorator';
@@ -15,7 +15,7 @@ export class PermissionsGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const requiredPermissions = this.reflector.getAllAndMerge<string[]>(
       PERMISSIONS_KEY,
-      [context.getHandler(), context.getClass()]
+      [context.getHandler(), context.getClass()],
     );
 
     if (!requiredPermissions || requiredPermissions.length === 0) {
@@ -23,17 +23,17 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user
-    console.log('Usuario autenticado: desde Permissions Guard', user);
-    const userPermissions: string [] = user.permissions ?? [];
+    const user = request.user;
+    const userPermissions: string[] = user.permissions ?? [];
+    const hasPermission = requiredPermissions.some((permission) =>
+      userPermissions.includes(permission),
+    );
+    if (!hasPermission) {
+      throw new ForbiddenException(
+        'No tienes permiso para acceder a esta ruta',
+      );
+    }
 
-      const hasPermission = requiredPermissions.some((permission) => userPermissions.includes(permission));
-    console.log(hasPermission, 'Desde Permissions Guard')
-      if (!hasPermission) {
-        throw new ForbiddenException('No tienes permiso para acceder a esta ruta');
-      }
-  
-      return true;
+    return true;
   }
-
 }

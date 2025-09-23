@@ -38,12 +38,16 @@ export class CitasController {
   findOne(@Param('id') id: string) {
     return this.citasService.findOne(+id);
   }
-
+  
+  @Patch('reciclar/:id')
+  reciclar(@Param('id') id: string) {
+    return this.citasService.reciclar(+id);
+  }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCitaDto: UpdateCitaDto, @User() user:any) {
+    console.log(updateCitaDto)
     return this.citasService.update(+id, updateCitaDto, user.userId);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.citasService.remove(+id);

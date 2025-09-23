@@ -181,6 +181,7 @@ model CitaServicio {
   updatedAt  DateTime @updatedAt
   cita       Cita     @relation(fields: [citaId], references: [id])
   servicio   Servicio @relation(fields: [servicioId], references: [id])
+  isActive   Boolean  @default(true)
 
   @@unique([citaId, servicioId])
 }
