@@ -15,13 +15,13 @@ export class VehiculosService {
     });
   }
 
-  async findAll() {
+  async findAll(filter?:{clienteId?:number}) {
     return await this.prisma.vehiculo.findMany({
-      where: { isActive: true },
-      include: {
-        cliente: true,
-        tipo: true,
-      },
+      where: filter?.clienteId? { clienteId: filter.clienteId } : undefined,
+      // include: {
+      //   cliente: true,
+      //   tipo: true,
+      // },
     });
   }
 
