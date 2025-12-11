@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Vehiculo } from '../vehiculos/entities/vehiculo.entity';
 @Injectable()
 export class ClientService {
   constructor(private prisma: PrismaService) {}
@@ -85,6 +86,7 @@ export class ClientService {
   async findAll() {
     return await this.prisma.cliente.findMany({
       orderBy: { createdAt: 'desc' },
+      include: { vehiculos: true },
     });
   }
 
